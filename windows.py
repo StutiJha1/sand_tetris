@@ -110,7 +110,7 @@ def draw_grid():
             if grid[row][col] == 1:
                 pygame.draw.rect(screen, SAND_COLOR, rect)
             # Draw grid lines
-            #pygame.draw.rect(screen, GRAY, rect, 1)
+            pygame.draw.rect(screen, GRAY, rect, 1)
 
 
 '''def update_sand():

@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 #defining grid size
-ROWS = 20
-COLUMNS = 10
+ROWS = 10
+COLUMNS = 5
 
 #creating subplots and adjusting space between them
 fig, axes = plt.subplots(ROWS, COLUMNS, figsize=(COLUMNS, ROWS)) 
@@ -33,7 +34,7 @@ tetrominoes = [
     np.array([[1,1], # O-shape
               [1,1]]),
 
-    np.array([[1,1,1,1]]) # I-shape
+    np.array([[1,1,1,1]]), # I-shape
 
     np.array([[0,1,0], # T-shape
               [1,1,1]]),
@@ -47,7 +48,7 @@ tetrominoes = [
 current_tetromino = random.choice(tetrominoes)
 
 #defining tetromino's position
-tetromino_position = (0, random.radint(0, COLUMNS- current_tetromino.shape[1]))
+tetromino_position = (0, random.randint(0, COLUMNS- current_tetromino.shape[1]))
 
 #checking if the tetromino can fall down
 def can_fall(grid, current_tetromino, tetromino_position):
@@ -60,15 +61,64 @@ def can_fall(grid, current_tetromino, tetromino_position):
                 if row_pos+ i + 1 >= ROWS or grid[row_pos+i+1][col_pos+j] == 1:
                     return False
     return True
+    #checks if it can fall
 
 #moving the tetromino down
-def move_tetromino(grid, current_tetromino, tetromino_position):
+def move_tetromino_down(grid, current_tetromino, tetromino_position):
     row_pos, col_pos = tetromino_position
     if can_fall(grid, current_tetromino, tetromino_position):
         row_pos += 1
         tetromino_position = (row_pos, col_pos)
     return tetromino_position
+    #gets new position 1 step down
 
-#detecting collision
+#handling collision
+def handling_collision(grid, current_tetromino, tetromino_position):
+    r, c = current_tetromino.shape
+    row_pos, col_pos = tetromino_position
+
+    # Placing the tetromino on the grid
+    for i in range(r):
+        for j in range(c):
+            if current_tetromino[i][j] == 1:
+                grid[row_pos + i][col_pos + j] = 1
+
+    # Clearing full rows
+    for row in range(ROWS):
+        if all(grid[row] == 1):  # Check if the row is full
+            grid[row] = 0  # Clear the row
+            grid[1:row+1] = grid[0:row]  # Shift rows down
+
+    # Create a new tetromino
+    new_tetromino = random.choice(tetrominoes)
+    new_position = (0, random.randint(0, COLUMNS - new_tetromino.shape[1]))
+
+    return new_tetromino, new_position
+
+#defining the game loop
+def game_loop():
+    global current_tetromino, tetromino_position
+    while True:
+        # Check if the tetromino cannot fall (game over condition)
+        if not can_fall(grid, current_tetromino, tetromino_position):
+            print("Game Over!")
+            break  # Exit the game loop
+        
+        # Move the tetromino down if possible
+        tetromino_position = move_tetromino_down(grid, current_tetromino, tetromino_position)
+        
+        # Update the grid and plot
+        update_colour(grid)
+        plt.draw()
+        plt.pause(0.5)
+
+        # If tetromino has reached the bottom, handle collision
+        if not can_fall(grid, current_tetromino, tetromino_position):
+            current_tetromino, tetromino_position = handling_collision(grid, current_tetromino, tetromino_position)
+
+current_tetromino = random.choice(tetrominoes)
+tetromino_position = (0, random.randint(0, COLUMNS - current_tetromino.shape[1]))
+game_loop()
+plt.show()
 
 
