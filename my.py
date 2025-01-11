@@ -20,14 +20,21 @@ for ax in axes.flat: #iterates through each subplot
 grid = np.zeros((ROWS,COLUMNS), dtype = int)
 
 #setting colour based on cell's value
-def update_colour(grid):
+def update_colour(grid, current_tetromino, tetromino_position):
+    temp_grid = grid.copy()
+    r, c = current_tetromino.shape
+    row_pos, col_pos = tetromino_position
+
+    for i in range(r):
+        for j in range(c):
+            if current_tetromino[i][j] == 1:
+                temp_grid[row_pos + i][col_pos + j] = 1
+
     for row in range(ROWS):
         for col in range(COLUMNS):
-            if grid[row][col] == 1:
-                color = 'black'
-            else:
-                color = 'white'
+            color = 'black' if temp_grid[row][col] == 1 else 'white'
             axes[row, col].set_facecolor(color)
+
 
 #defining tetrominoes
 tetrominoes = [
@@ -108,7 +115,7 @@ def game_loop():
         tetromino_position = move_tetromino_down(grid, current_tetromino, tetromino_position)
         
         # Update the grid and plot
-        update_colour(grid)
+        update_colour(grid, current_tetromino, tetromino_position)
         plt.draw()
         plt.pause(0.5)
 
