@@ -90,7 +90,7 @@ def sand_settle(grid, current_tetromino, tetromino_position):
                 grid[row_pos + i][col_pos + j] = 1
 
     # settling the tetromino into the grid 
-    for i in range(ROWS-1, -1, -1):
+    for i in range(ROWS-2, -1, -1):
         for j in range(COLUMNS):
             if grid[i][j] == 1:  
                 # moving it down to the lowest position
@@ -101,14 +101,13 @@ def sand_settle(grid, current_tetromino, tetromino_position):
                     k += 1
 
                 if k + 1 < ROWS:
-                    # Checking left
-                    if j > 0 and grid[k + 1][j - 1] == 0:
+                    if j > 0 and grid[k + 1][j - 1] == 0 and grid[k][j - 1] == 0:
                         grid[k + 1][j - 1] = 1
-                        grid[k + 1][j] = 0
-                    # Checking right
-                    elif j + 1 < COLUMNS and grid[k + 1][j + 1] == 0:
+                        grid[k][j] = 0
+                    elif j + 1 < COLUMNS and grid[k + 1][j + 1] == 0 and grid[k][j + 1] == 0:
                         grid[k + 1][j + 1] = 1
-                        grid[k + 1][j] = 0
+                        grid[k][j] = 0
+
 
 
     # Checking if the grid is full at the top (game over condition)
