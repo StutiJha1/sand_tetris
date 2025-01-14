@@ -28,16 +28,18 @@ def update_colour(grid, current_tetromino, tetromino_position, color):
     r, c = current_tetromino.shape
     row_pos, col_pos = tetromino_position
 
+    #iterates over the tetromino's shape and changes grid copy pos as tetro's shape
     for i in range(r):
         for j in range(c):
             if current_tetromino[i][j] == 1:
                 temp_grid[row_pos + i][col_pos + j] = 1
 
+    #iterates over the grid
     for row in range(ROWS):
         for col in range(COLUMNS):
             cell_value = temp_grid[row][col]
             if cell_value == 1:
-                axes[row, col].set_facecolor(color)  # Set color for filled cells
+                axes[row, col].set_facecolor(color)  # Set color for filled cells !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             else:
                 axes[row, col].set_facecolor('white')  # Set empty cells to white
 
@@ -93,23 +95,25 @@ def sand_settle(grid, current_tetromino, tetromino_position):
     for i in range(ROWS-2, -1, -1):
         for j in range(COLUMNS):
             if grid[i][j] == 1:  
-                k = i
+                k = i  #not lastrow and grid value 0  
                 while k + 1 < ROWS and grid[k + 1][j] == 0:
                     grid[k + 1][j] = 1
                     grid[k][j] = 0
                     k += 1
 
-                if k + 1 < ROWS:
+                if k + 1 < ROWS: #not lastrow
+                    #not col 0 and down-left col and left-col
                     if j > 0 and grid[k + 1][j - 1] == 0 and grid[k][j - 1] == 0:
                         grid[k + 1][j - 1] = 1
                         grid[k][j] = 0
+                        #not last-col and    down-right col                right col
                     elif j + 1 < COLUMNS and grid[k + 1][j + 1] == 0 and grid[k][j + 1] == 0:
                         grid[k + 1][j + 1] = 1
                         grid[k][j] = 0
 
     # Checking if the grid is full at the top (game over condition)
     if any(grid[0] == 1):
-        plt.text(0.5, 0.5, "Game Over!", color='red', fontsize=15, ha='center', va='center', transform=fig.transFigure)
+        plt.text(0.5, 0.5, "Game Over!", color='red', fontsize=25, ha='center', va='center', transform=fig.transFigure)
         plt.draw()
         plt.pause(2)  # Pause to display "Game Over!" before the program exits
         return False  # Game over
